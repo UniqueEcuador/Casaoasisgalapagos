@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CasaOasis Galápagos — Centro de crecimiento</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green:       #1a6b47;
+      --green-light: #e8f5ee;
+      --green-mid:   #2d9164;
+      --green-dark:  #0f4530;
+      --sand:        #f7f3ec;
+      --sand-dark:   #ede7da;
+      --text:        #1c1c1c;
+      --text-muted:  #6b6b6b;
+      --border:      #ddd6ca;
+      --white:       #ffffff;
+      --radius:      12px;
+      --radius-sm:   7px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--sand);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 1.5rem 1rem 5rem;
+    }
+
+    .container { max-width: 740px; margin: 0 auto; }
+
+    /* HEADER */
+    .header {
+      text-align: center;
+      padding: 2.5rem 1.5rem 2rem;
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      margin-bottom: 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--green-dark), var(--green-mid), #5dbf8e, var(--green-mid), var(--green-dark));
+    }
+    .header h1 {
+      font-family: 'Lora', serif;
+      font-size: 26px;
+      font-weight: 500;
+      color: var(--green);
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
+    }
+    .header p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    /* API KEY BANNER */
+    .api-banner {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.25rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .api-banner label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .api-banner input {
+      flex: 1;
+      min-width: 180px;
+      padding: 8px 12px;
+      font-size: 13px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--sand);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      letter-spacing: 0.5px;
+    }
+    .api-banner input:focus { outline: none; border-color: var(--green-mid); background: var(--white); }
+    .api-status {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-weight: 500;
+    }
+    .api-status.ok  { background: var(--green-light); color: var(--green); }
+    .api-status.err { background: #fef3f2; color: #b42318; }
+    .api-status.empty { background: #fef9ee; color: #92400e; }
+    .api-help {
+      width: 100%;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      padding-top: 2px;
+    }
+    .api-help a { color: var(--green); text-decoration: none; }
+    .api-help a:hover { text-decoration: underline; }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+    .tab {
+      padding: 8px 15px;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      cursor: pointer;
+      background: var(--white);
+      color: var(--text-muted);
+      transition: all 0.15s;
+    }
+    .tab:hover { background: var(--sand-dark); color: var(--text); }
+    .tab.active { background: var(--green); color: #fff; border-color: var(--green); font-weight: 500; }
+
+    /* SECTIONS */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* CARD */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.35rem 1.35rem 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .card h3 {
+      font-family: 'Lora', serif;
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--green);
+      margin-bottom: 12px;
+    }
+    .card > label {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 6px;
+      margin-top: 4px;
+    }
+
+    /* TIP */
+    .tip {
+      background: var(--green-light);
+      border-left: 3px solid var(--green-mid);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--green-dark);
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    /* INPUTS */
+    input[type=text], textarea {
+      width: 100%;
+      padding: 9px 12px;
+      font-size: 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--white);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      margin-bottom: 12px;
+      transition: border-color 0.15s;
+    }
+    input[type=text]:focus, textarea:focus { outline: none; border-color: var(--green-mid); }
+    textarea { resize: vertical; line-height: 1.65; }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 18px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      background: var(--white);
+      color: var(--text);
+      transition: all 0.15s;
+    }
+    .btn:hover { background: var(--sand-dark); }
+    .btn.primary { background: var(--green); color: #fff; border-color: var(--green); }
+    .btn.primary:hover { background: var(--green-mid); border-color: var(--green-mid); }
+    .btn.primary:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn.sm { padding: 5px 12px; font-size: 12px; }
+
+    /* PILL BUTTONS */
+    .brow { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+    .pb {
+      padding: 6px 14px;
+      font-size: 12px;
+      font-family: 'DM Sans', sans-serif;
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      cursor: pointer;
+      background: var(--white);
+      color: var(--text-muted);
+      transition: all 0.12s;
+    }
+    .pb:hover { background: var(--sand-dark); color: var(--text); }
+    .pb.sel { background: var(--green); color: #fff; border-color: var(--green); font-weight: 500; }
+
+    /* CHIPS */
+    .chips { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+    .chip {
+      display: inline-block;
+      padding: 4px 12px;
+      font-size: 12px;
+      border-radius: 99px;
+      background: var(--sand);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .chip:hover { background: var(--green-light); color: var(--green); border-color: var(--green-mid); }
+
+    /* OUTPUT */
+    .out-wrap { position: relative; margin-top: 4px; }
+    .out-box {
+      background: var(--sand);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem 1rem 3rem;
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--text);
+      white-space: pre-wrap;
+      min-height: 90px;
+    }
+    .out-box.loading { color: var(--text-muted); font-style: italic; }
+    .copy-btn { position: absolute; bottom: 10px; right: 10px; }
+
+    /* CHECKLIST */
+    .checklist { list-style: none; }
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--sand-dark);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .chk {
+      width: 20px; height: 20px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--green);
+      margin-top: 1px;
+      transition: all 0.12s;
+      background: var(--white);
+    }
+    .chk.done { background: var(--green-light); border-color: var(--green-mid); }
+
+    /* WEB BLOCKS */
+    .wsec {
+      background: var(--sand);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      margin-bottom: 10px;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+    .wsec strong { color: var(--text); font-weight: 500; }
+
+    /* BADGE */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 11px;
+      border-radius: 99px;
+      background: #fef3c7;
+      color: #92400e;
+      margin-left: 6px;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+    footer a { color: var(--green); text-decoration: none; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>🌿 CasaOasis Galápagos</h1>
+    <p>Centro de crecimiento para mamá en Santa Cruz &amp; su hija en Alemania<br>
+    Más huéspedes · Más autonomía · Menos esfuerzo</p>
+  </div>
+
+  <!-- API KEY -->
+  <div class="api-banner">
+    <label for="apikey">🔑 Clave API OpenAI</label>
+    <input type="password" id="apikey" placeholder="sk-..." oninput="checkKey()" />
+    <span class="api-status empty" id="api-status">Sin clave</span>
+    <p class="api-help">
+      Clave gratuita en <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com/api-keys</a> →
+      "Create new secret key". Solo tú la ves — nunca se envía a ningún servidor externo.
+    </p>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="sw('contenido',this)">✏️ Contenido</button>
+    <button class="tab" onclick="sw('resenas',this)">⭐ Reseñas</button>
+    <button class="tab" onclick="sw('social',this)">📸 Redes sociales</button>
+    <button class="tab" onclick="sw('web',this)">🌐 Sitio web</button>
+    <button class="tab" onclick="sw('checklist',this)">✅ Lista de tareas</button>
+  </div>
+
+  <!-- ============ CONTENIDO ============ -->
+  <div id="tab-contenido" class="section active">
+    <div class="card">
+      <h3>Generar textos para CasaOasis</h3>
+      <div class="tip">Un buen texto en el idioma del huésped puede aumentar los clics hasta un 40%. ¡La hija puede encargarse del alemán desde Alemania!</div>
+
+      <label>¿Quién lo usa ahora?</label>
+      <div class="brow">
+        <button class="pb sel" onclick="sel(this,'who','mama')">🌺 Mamá (Galápagos)</button>
+        <button class="pb" onclick="sel(this,'who','hija')">🎓 Hija (Alemania)</button>
+      </div>
+
+      <label>Idioma del texto</label>
+      <div class="brow">
+        <button class="pb sel" onclick="sel(this,'clang','ES')">🇪🇸 Español</button>
+        <button class="pb" onclick="sel(this,'clang','NL')">🇳🇱 Nederlands</button>
+        <button class="pb" onclick="sel(this,'clang','EN')">🇬🇧 English</button>
+        <button class="pb" onclick="sel(this,'clang','DE')">🇩🇪 Deutsch</button>
+        <button class="pb" onclick="sel(this,'clang','PT')">🇵🇹 Português</button>
+        <button class="pb" onclick="sel(this,'clang','ZH')">🇨🇳 中文</button>
+        <button class="pb" onclick="sel(this,'clang','FR')">🇫🇷 Français</button>
+      </div>
+
+      <label>¿Qué quieres escribir?</label>
+      <div class="chips">
+        <span class="chip" onclick="fT('ct','título atractivo para el listing de CasaOasis')">Título del listing</span>
+        <span class="chip" onclick="fT('ct','descripción completa y atractiva del alojamiento')">Descripción</span>
+        <span class="chip" onclick="fT('ct','guía del barrio y actividades cerca de CasaOasis')">Guía del barrio</span>
+        <span class="chip" onclick="fT('ct','mensaje de bienvenida cálido para los huéspedes')">Mensaje de bienvenida</span>
+        <span class="chip" onclick="fT('ct','normas de la casa con tono amigable')">Normas de la casa</span>
+        <span class="chip" onclick="fT('ct','preguntas frecuentes sobre CasaOasis')">Preguntas frecuentes</span>
+        <span class="chip" onclick="fT('ct','instrucciones de check-out para los huéspedes')">Instrucciones check-out</span>
+        <span class="chip" onclick="fT('ct','guía de restaurantes locales en Puerto Ayora')">Guía gastronómica</span>
+      </div>
+      <input type="text" id="ct" placeholder="o escribe tu propio tema..." />
+
+      <label>Detalles del alojamiento (opcional)</label>
+      <textarea id="cd" rows="2" placeholder="ej. estudio a 5 min de Tortuga Bay, Starlink wifi, ideal para parejas, vistas al jardín..."></textarea>
+
+      <button class="btn primary" id="btn-c" onclick="genC()">✨ Generar con IA</button>
+    </div>
+    <div class="card" id="cr-card" style="display:none;">
+      <h3>Resultado</h3>
+      <div class="out-wrap">
+        <div class="out-box" id="cr"></div>
+        <button class="btn sm copy-btn" onclick="cp('cr')">📋 Copiar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ RESEÑAS ============ -->
+  <div id="tab-resenas" class="section">
+    <div class="card">
+      <h3>Mensajes para reseñas</h3>
+      <div class="tip">¡CasaOasis ya tiene una reseña de 5 estrellas! Cada nueva reseña mejora directamente tu posición en Airbnb.</div>
+
+      <label>Tipo de mensaje</label>
+      <div class="brow">
+        <button class="pb sel" onclick="sel(this,'rtype','checkout')">Tras check-out</button>
+        <button class="pb" onclick="sel(this,'rtype','midstay')">Durante la estancia</button>
+        <button class="pb" onclick="sel(this,'rtype','response')">Respuesta positiva</button>
+        <button class="pb" onclick="sel(this,'rtype','bad')">Respuesta crítica</button>
+      </div>
+
+      <label>Idioma</label>
+      <div class="brow">
+        <button class="pb sel" onclick="sel(this,'rlang','ES')">🇪🇸 Español</button>
+        <button class="pb" onclick="sel(this,'rlang','NL')">🇳🇱 Nederlands</button>
+        <button class="pb" onclick="sel(this,'rlang','EN')">🇬🇧 English</button>
+        <button class="pb" onclick="sel(this,'rlang','DE')">🇩🇪 Deutsch</button>
+        <button class="pb" onclick="sel(this,'rlang','PT')">🇵🇹 Português</button>
+        <button class="pb" onclick="sel(this,'rlang','ZH')">🇨🇳 中文</button>
+      </div>
+
+      <label>Nombre del huésped (opcional)</label>
+      <input type="text" id="rg" placeholder="ej. Sophie, Pieter, Thomas..." />
+
+      <label>Contexto de la estancia (opcional)</label>
+      <input type="text" id="rn" placeholder="ej. 5 noches, pareja de Países Bajos, hicieron snorkel en Tortuga Bay" />
+
+      <button class="btn primary" id="btn-r" onclick="genR()">✨ Generar mensaje</button>
+    </div>
+    <div class="card" id="rr-card" style="display:none;">
+      <div class="out-wrap">
+        <div class="out-box" id="rr"></div>
+        <button class="btn sm copy-btn" onclick="cp('rr')">📋 Copiar</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Consejos para más reseñas de 5 estrellas</h3>
+      <ul class="checklist">
+        <li><div class="chk" onclick="tC(this)"></div><span>Envía el mensaje de check-out en la primera hora tras la salida</span></li>
+        <li><div class="chk" onclick="tC(this)"></div><span>Responde siempre públicamente a todas las reseñas, también las positivas</span></li>
+        <li><div class="chk" onclick="tC(this)"></div><span>Añade una tarjeta de bienvenida escrita a mano</span></li>
+        <li><div class="chk" onclick="tC(this)"></div><span>Da un consejo local especial al llegar (café, playa secreta)</span></li>
+        <li><div class="chk" onclick="tC(this)"></div><span>Pregunta al hacer el check-in si todo está bien</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============ SOCIAL ============ -->
+  <div id="tab-social" class="section">
+    <div class="card">
+      <h3>Posts para redes sociales</h3>
+      <div class="tip">La hija en Alemania puede gestionar los posts en alemán e inglés. ¡Equipo perfecto de madre e hija!</div>
+
+      <label>Plataforma</label>
+      <div class="brow">
+        <button class="pb sel" onclick="sel(this,'splat','instagram')">📸 Instagram</button>
+        <button class="pb" onclick="sel(this,'splat','facebook')">👥 Facebook</button>
+        <button class="pb" onclick="sel(this,'splat','tiktok')">🎵 TikTok</button>
+        <button class="pb" onclick="sel(this,'splat','google')">📍 Google</button>
+        <button class="pb" onclick="sel(this,'splat','pinterest')">📌 Pinterest</button>
+      </div>
+
+      <label>Tono</label>
+      <div class="brow">
+        <button class="pb sel" onclick="sel(this,'stone','inspiring')">Inspirador</button>
+        <button class="pb" onclick="sel(this,'stone','informative')">Informativo</button>
+        <button class="pb" onclick="sel(this,'stone','seasonal')">Estacional</button>
+        <button class="pb" onclick="sel(this,'stone','fun')">Divertido</button>
+        <button class="pb" onclick="sel(this,'stone','urgent')">Oferta / urgencia</button>
+      </div>
+
+      <label>Tema del post</label>
+      <div class="chips">
+        <span class="chip" onclick="fT('st','amanecer desde la terraza de CasaOasis')">Amanecer</span>
+        <span class="chip" onclick="fT('st','Tortuga Bay a solo 5 minutos caminando')">Tortuga Bay</span>
+        <span class="chip" onclick="fT('st','tortugas gigantes de Galápagos vida silvestre')">Tortugas gigantes</span>
+        <span class="chip" onclick="fT('st','disponibilidad de última hora en CasaOasis')">Última hora</span>
+        <span class="chip" onclick="fT('st','experiencia de un huésped feliz en CasaOasis')">Experiencia huésped</span>
+        <span class="chip" onclick="fT('st','por qué visitar Santa Cruz en Galápagos')">Por qué Galápagos</span>
+        <span class="chip" onclick="fT('st','iguanas marinas lobos de mar piqueros de patas azules')">Fauna</span>
+        <span class="chip" onclick="fT('st','mañana tranquila con café en CasaOasis')">Ambiente</span>
+        <span class="chip" onclick="fT('st','viajeros neerlandeses vacaciones Galápagos CasaOasis')">🇳🇱 Para holandeses</span>
+      </div>
+      <textarea id="st" rows="2" placeholder="Describe el tema del post..."></textarea>
+
+      <label>Idioma</label>
+      <div class="brow">
+        <button class="pb sel" onclick="sel(this,'slang','ES')">🇪🇸 Español</button>
+        <button class="pb" onclick="sel(this,'slang','NL')">🇳🇱 Nederlands</button>
+        <button class="pb" onclick="sel(this,'slang','EN')">🇬🇧 English</button>
+        <button class="pb" onclick="sel(this,'slang','DE')">🇩🇪 Deutsch</button>
+        <button class="pb" onclick="sel(this,'slang','PT')">🇵🇹 Português</button>
+        <button class="pb" onclick="sel(this,'slang','ZH')">🇨🇳 中文</button>
+      </div>
+
+      <button class="btn primary" id="btn-s" onclick="genS()">✨ Generar post</button>
+    </div>
+    <div class="card" id="sr-card" style="display:none;">
+      <div class="out-wrap">
+        <div class="out-box" id="sr"></div>
+        <button class="btn sm copy-btn" onclick="cp('sr')">📋 Copiar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ WEB ============ -->
+  <div id="tab-web" class="section">
+    <div class="card">
+      <h3>Estrategia de sitio web</h3>
+      <div class="tip">Un sitio propio = sin comisión de Airbnb (15–20%) en reservas directas. Con 10 reservas al año ya ahorras €500–1.000.</div>
+      <div class="wsec"><strong>Opción 1 — Framer (recomendado para empezar)</strong><br>Plan gratuito disponible. Drag &amp; drop, plantillas preciosas, fácil de gestionar. Dominio gratis o conecta el tuyo (~€15/año).</div>
+      <div class="wsec"><strong>Opción 2 — WordPress con hosting propio</strong><br>Lo más flexible. Hostinger o SiteGround (~€3–8/mes). Plugin "Smoobu" para sincronizar con Airbnb.</div>
+      <div class="wsec"><strong>Opción 3 — GitHub Pages (esta herramienta)</strong><br>Hosting gratuito. Conecta un dominio como casaoasis-galapagos.com (~€12/año en Namecheap).</div>
+      <div class="wsec"><strong>Dominio recomendado</strong><br>casaoasisgalapagos.com — corto, internacional, memorable.</div>
+    </div>
+
+    <div class="card">
+      <h3>Generar textos para la web</h3>
+      <div class="chips">
+        <span class="chip" onclick="fT('wt','titular y subtítulo de la página principal de CasaOasis')">Titular principal</span>
+        <span class="chip" onclick="fT('wt','historia personal de la anfitriona de CasaOasis en Galápagos')">Nuestra historia</span>
+        <span class="chip" onclick="fT('wt','qué hacer cerca de CasaOasis en Santa Cruz Galápagos')">Actividades</span>
+        <span class="chip" onclick="fT('wt','meta descripción SEO para el sitio web de CasaOasis')">Meta SEO</span>
+        <span class="chip" onclick="fT('wt','texto de llamada a la acción para reservar en CasaOasis')">Reservar ahora</span>
+        <span class="chip" onclick="fT('wt','página especial para viajeros neerlandeses que buscan Galápagos')">🇳🇱 Para holandeses</span>
+      </div>
+      <input type="text" id="wt" placeholder="o escribe tu propio tema..." />
+
+      <label>Idioma</label>
+      <div class="brow">
+        <button class="pb sel" onclick="sel(this,'wlang','ES')">🇪🇸 Español</button>
+        <button class="pb" onclick="sel(this,'wlang','NL')">🇳🇱 Nederlands</button>
+        <button class="pb" onclick="sel(this,'wlang','EN')">🇬🇧 English</button>
+        <button class="pb" onclick="sel(this,'wlang','DE')">🇩🇪 Deutsch</button>
+        <button class="pb" onclick="sel(this,'wlang','PT')">🇵🇹 Português</button>
+      </div>
+
+      <button class="btn primary" id="btn-w" onclick="genW()">✨ Generar texto</button>
+    </div>
+    <div class="card" id="wr-card" style="display:none;">
+      <div class="out-wrap">
+        <div class="out-box" id="wr"></div>
+        <button class="btn sm copy-btn" onclick="cp('wr')">📋 Copiar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ CHECKLIST ============ -->
+  <div id="tab-checklist" class="section">
+    <div class="card">
+      <h3>Optimización del listing de Airbnb</h3>
+      <ul class="checklist">
+        <li><div class="chk" onclick="tC(this)"></div><span>Mínimo 20 fotos con buena luz (mañana o atardecer)</span></li>
+        <li><div class="chk" onclick="tC(this)"></div><span>La foto principal muestra lo más especial de CasaOasis</span></li>
+        <li><div class="chk" onclick="tC(this)"></div><span>Descripción en español, inglés y alemán como mínimo</span></li>
+        <li><div class="chk" onclick="tC(this)"></div><span>Todas las comodidades marcadas, incluidas las pequeñas</span></li>
+        <li><div class="chk" onclick="tC(this)"></div><span>Activar "Reserva instantánea" para mejor visibilidad</span></li>
+        <li><div class="chk" onclick="tC(this)"></div><span>Precios competitivos en temporada baja</span></li>
+        <li><div class="chk" onclick="tC(this)"></div><span>"Parque Nacional Galápagos" en el título o descripción (SEO)</span></li>
+        <li><div class="chk" onclick="tC(this)"></div><span>Responder mensajes en menos de 1 hora (mejora el ranking)</span></li>
+        <li><div class="chk" onclick="tC(this)"></div><span>Crear una "Guía" en Airbnb con consejos locales de la anfitriona</span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Otros canales</h3>
+      <ul class="checklist">
+        <li><div class="chk" onclick="tC(this)"></div><span>Booking.com <span class="badge">la hija puede ayudar</span></span></li>
+        <li><div class="chk" onclick="tC(this)"></div><span>Google Business (gratis, gran impacto en buscadores)</span></li>
+        <li><div class="chk" onclick="tC(this)"></div><span>Instagram: @casaoasis.galapagos</span></li>
+        <li><div class="chk" onclick="tC(this)"></div><span>TripAdvisor</span></li>
+        <li><div class="chk" onclick="tC(this)"></div><span>Sitio web propio en línea</span></li>
+        <li><div class="chk" onclick="tC(this)"></div><span>Pinterest con fotos de Galápagos y CasaOasis</span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>División de tareas: mamá · hija · amigo</h3>
+      <div class="tip">Mamá gestiona a los huéspedes. La hija gestiona la presencia online desde Alemania. El amigo construye la base técnica en junio.</div>
+      <ul class="checklist">
+        <li><div class="chk" onclick="tC(this)"></div><span>🌺 Mamá — fotos con buena luz (mañana o atardecer)</span></li>
+        <li><div class="chk" onclick="tC(this)"></div><span>🌺 Mamá — bienvenida a huéspedes y mensajes de check-out</span></li>
+        <li><div class="chk" onclick="tC(this)"></div><span>🎓 Hija — textos en alemán para el listing y la web</span></li>
+        <li><div class="chk" onclick="tC(this)"></div><span>🎓 Hija — gestión de redes sociales en alemán e inglés</span></li>
+        <li><div class="chk" onclick="tC(this)"></div><span>🎓 Hija — configuración de Booking.com y Google Business</span></li>
+        <li><div class="chk" onclick="tC(this)"></div><span>🇳🇱 Amigo (junio) — dominio, WordPress y configuración técnica</span></li>
+        <li><div class="chk" onclick="tC(this)"></div><span>🇳🇱 Amigo — página especial para viajeros neerlandeses</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    Hecho con ❤️ para CasaOasis · Santa Cruz, Galápagos, Ecuador<br>
+    <a href="https://www.airbnb.es/rooms/1618950214856599854" target="_blank">Ver en Airbnb</a>
+  </footer>
+
+</div><!-- /container -->
+
+<script>
+  const S = {
+    who: 'mama', clang: 'ES',
+    rtype: 'checkout', rlang: 'ES',
+    splat: 'instagram', stone: 'inspiring', slang: 'ES',
+    wlang: 'ES'
+  };
+  const LN = {
+    ES: 'Spanish', EN: 'English', DE: 'German',
+    PT: 'Portuguese', ZH: 'Chinese (Simplified)', NL: 'Dutch', FR: 'French'
+  };
+
+  function getKey() { return document.getElementById('apikey').value.trim(); }
+
+  function checkKey() {
+    const k = getKey();
+    const el = document.getElementById('api-status');
+    if (!k) { el.className = 'api-status empty'; el.textContent = 'Sin clave'; }
+    else if (k.startsWith('sk-')) { el.className = 'api-status ok'; el.textContent = '✓ Lista'; }
+    else { el.className = 'api-status err'; el.textContent = 'Formato incorrecto'; }
+  }
+
+  function sw(name, el) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    el.classList.add('active');
+  }
+
+  function sel(el, key, val) {
+    S[key] = val;
+    el.closest('.brow').querySelectorAll('.pb').forEach(b => b.classList.remove('sel'));
+    el.classList.add('sel');
+  }
+
+  function fT(id, t) { document.getElementById(id).value = t; }
+
+  function tC(el) {
+    el.classList.toggle('done');
+    el.textContent = el.classList.contains('done') ? '✓' : '';
+  }
+
+  async function ai(prompt) {
+    const key = getKey();
+    if (!key) { return '⚠️ Por favor introduce tu clave API de OpenAI arriba para generar textos.'; }
+    if (!key.startsWith('sk-')) { return '⚠️ La clave API no parece correcta. Debe empezar por sk-...'; }
+    try {
+      const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + key
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          max_tokens: 1000,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+      const data = await resp.json();
+      if (data.error) return '⚠️ Error: ' + data.error.message;
+      return data.choices?.[0]?.message?.content || '⚠️ Sin respuesta. Inténtalo de nuevo.';
+    } catch (e) {
+      return '⚠️ Error de conexión: ' + e.message;
+    }
+  }
+
+  function setBtn(id, loading) {
+    const b = document.getElementById(id);
+    b.disabled = loading;
+    b.textContent = loading ? '⏳ Generando...' : '✨ Generar con IA';
+  }
+
+  function show(cardId, outId, text, loading) {
+    document.getElementById(cardId).style.display = 'block';
+    const box = document.getElementById(outId);
+    box.textContent = text;
+    box.className = loading ? 'out-box loading' : 'out-box';
+  }
+
+  async function genC() {
+    const topic = document.getElementById('ct').value.trim();
+    const details = document.getElementById('cd').value.trim();
+    if (!topic) { alert('Por favor escribe o selecciona un tema.'); return; }
+    setBtn('btn-c', true);
+    show('cr-card', 'cr', '✍️ Generando texto...', true);
+    const nl = S.clang === 'NL' ? 'Target audience: Dutch and Belgian travelers dreaming of a Galapagos adventure.' : '';
+    const det = details
+      ? 'Property details: ' + details
+      : 'A cozy, well-equipped Airbnb near Tortuga Bay in Puerto Ayora, perfect for couples and small groups wanting an authentic Galapagos experience.';
+    const prompt = `You are a professional copywriter for boutique eco-tourism accommodations.
+Write a ${topic} in ${LN[S.clang]} for CasaOasis, a charming Airbnb on Santa Cruz Island, Galápagos Islands, Ecuador.
+${det}
+The host is a warm, professional Spanish woman who takes great pride in her home. Make the text personal, vivid, and inviting. Highlight the unique Galapagos experience.
+${nl}
+Output ONLY the requested text — no labels, no preamble.`;
+    show('cr-card', 'cr', await ai(prompt), false);
+    setBtn('btn-c', false);
+  }
+
+  async function genR() {
+    const guest = document.getElementById('rg').value.trim();
+    const notes = document.getElementById('rn').value.trim();
+    setBtn('btn-r', true);
+    show('rr-card', 'rr', '✍️ Generando mensaje...', true);
+    const tm = {
+      checkout: 'a warm post-checkout message thanking the guest and gently inviting them to leave a review on Airbnb. Mention it helps other travelers discover CasaOasis.',
+      midstay:  'a friendly mid-stay check-in message asking if everything is comfortable. Do not ask for a review yet.',
+      response: 'a gracious, warm public reply to a 5-star Airbnb review. Thank the guest warmly and invite them back to CasaOasis.',
+      bad:      'a professional, calm public reply to a critical review. Acknowledge the concern politely and show commitment to quality.'
+    };
+    const prompt = `You are the host of CasaOasis, a boutique Airbnb on Santa Cruz Island, Galápagos, Ecuador.
+Write ${tm[S.rtype]}
+${guest ? 'Guest name: ' + guest : 'Use a warm generic greeting.'}
+${notes  ? 'Context about this stay: ' + notes : ''}
+Write in ${LN[S.rlang]}. Keep it personal, warm, authentic, under 130 words. Output only the message.`;
+    show('rr-card', 'rr', await ai(prompt), false);
+    setBtn('btn-r', false);
+  }
+
+  async function genS() {
+    const topic = document.getElementById('st').value.trim();
+    if (!topic) { alert('Por favor describe el tema del post.'); return; }
+    setBtn('btn-s', true);
+    show('sr-card', 'sr', '✍️ Generando post...', true);
+    const pm = {
+      instagram: 'an Instagram caption with line breaks, natural emojis, and 10 relevant hashtags',
+      facebook:  'a Facebook post with an engaging question or call to action at the end',
+      tiktok:    'a short punchy TikTok caption (under 150 characters) that hooks viewers in the first line',
+      google:    'a Google Business post — informative, SEO-friendly, professional',
+      pinterest: 'a Pinterest pin description — descriptive, keyword-rich, inspiring'
+    };
+    const tom = {
+      inspiring:   'inspiring and emotional',
+      informative: 'informative and helpful',
+      seasonal:    'seasonal and timely',
+      fun:         'fun and playful',
+      urgent:      'urgent — limited availability or special offer'
+    };
+    const nl = S.slang === 'NL' ? 'Target audience: Dutch and Belgian travelers. Make references that resonate with Dutch travel culture and their love of nature.' : '';
+    const prompt = `You are the social media manager for CasaOasis, a charming boutique Airbnb on Santa Cruz Island, Galápagos Islands, Ecuador — near Tortuga Bay, surrounded by unique wildlife, perfect for couples and nature lovers.
+Write ${pm[S.splat]} about: ${topic}
+Tone: ${tom[S.stone]}
+Language: ${LN[S.slang]}
+${nl}
+Make it feel authentic to the Galapagos experience, not generic tourism. Output only the post text.`;
+    show('sr-card', 'sr', await ai(prompt), false);
+    setBtn('btn-s', false);
+  }
+
+  async function genW() {
+    const topic = document.getElementById('wt').value.trim();
+    if (!topic) { alert('Por favor escribe o selecciona un tema.'); return; }
+    setBtn('btn-w', true);
+    show('wr-card', 'wr', '✍️ Generando texto...', true);
+    const nl = S.wlang === 'NL' ? 'Target audience: Dutch travelers. Mention that Galapagos is a dream destination for Dutch nature lovers, and CasaOasis offers a personal, home-away-from-home experience. Use warm, direct Dutch tone.' : '';
+    const prompt = `You are a copywriter specializing in boutique travel accommodation websites.
+Write ${topic} in ${LN[S.wlang]} for CasaOasis — a charming, host-led Airbnb on Santa Cruz Island, Galápagos, Ecuador. The host is a warm Spanish woman with deep local knowledge. CasaOasis is near Tortuga Bay, surrounded by nature and wildlife, ideal for couples and small groups.
+${nl}
+Make it compelling, SEO-aware if relevant, and personal. Output only the text — no labels or preamble.`;
+    show('wr-card', 'wr', await ai(prompt), false);
+    setBtn('btn-w', false);
+  }
+
+  async function cp(id) {
+    const text = document.getElementById(id).textContent;
+    try {
+      await navigator.clipboard.writeText(text);
+      alert('¡Copiado al portapapeles!');
+    } catch(e) {
+      prompt('Copia el texto manualmente:', text);
+    }
+  }
+</script>
+</body>
+</html>
